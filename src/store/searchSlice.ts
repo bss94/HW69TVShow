@@ -1,23 +1,44 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, Draft, PayloadAction, Reducer} from '@reduxjs/toolkit';
+import {RootState} from '../app/store';
+import {fetchSearchVariants} from './searchThunk';
+import {ApiSearchItem} from '../types';
 
 interface SearchState{
-  name:string;
-  searchVariant:[];
+  searchValue:string;
   searching:boolean;
+  searchVariants:ApiSearchItem[]
 }
 const initialState:SearchState={
-  name:'',
-  searchVariant:[],
+  searchValue:'',
   searching:false,
+  searchVariants:[]
 };
 export const searchSlice = createSlice({
   name:'search',
   initialState,
   reducers:{
-    inputChange:(state,{payload:entered}:PayloadAction<string>)=>{
-      state.name = entered;
+    inputChange:(state:RootState,{payload:value}:PayloadAction<string>)=>{
+      state.searchValue = value
+    },
+    clearChange:(state:RootState)=>{
+      state.searchValue = ''
     }
   },
-
+  extraReducers:(builder)=>{
+    builder.addCase(fetchSearchVariants.pending,(state:Draft<SearchState>)=>{
+      state.searching = true;
+    });
+    builder.addCase(fetchSearchVariants.rejected,(state:Draft<SearchState>)=>{
+      state.searching = false;
+    });
+    builder.addCase(fetchSearchVariants.fulfilled,(state:Draft<SearchState>,{payload:items})=>{
+      state.searching = false;
+      state.searchVariants = items;
+    });
+  }
 });
-export const searchReducer = searchSlice.reducer;
+export const searchReducer:Reducer<SearchState> = searchSlice.reducer;
+export const {inputChange,clearChange} =searchSlice.actions;
+export const selectSearch = (state:RootState) => state.search.searchValue;
+
+export const selectVariants = (state:RootState) => state.search.searchVariants;
