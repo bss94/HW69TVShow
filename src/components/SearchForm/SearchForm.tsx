@@ -32,15 +32,15 @@ const SearchForm = () => {
                           value={searchValue}
                           onChange={onInputChange}/>
 
-              <div className="position-absolute top-100 bg-white border-1 border w-100 p-4">
-                <ul>
-                  {searchVariants.map(el => {
-                    return <li key={el.id}><NavLink to={`/shows/${el.id}`} onClick={() => {
-                      dispatch(clearChange);
-                    }}>{el.name}</NavLink></li>;
-                  })}
-                </ul>
-              </div>
+            <div className="position-absolute top-100 bg-white border-1 border w-100 p-4">
+              <ul>
+                {searchVariants.map(el => {
+                  return <li key={el.id}><NavLink to={`/shows/${el.id}`} onClick={() => {
+                    dispatch(clearChange);
+                  }}>{el.name}</NavLink></li>;
+                })}
+              </ul>
+            </div>
 
           </Col>
 
