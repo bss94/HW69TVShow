@@ -15,9 +15,27 @@ const SearchForm = () => {
   const onInputChange = async (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     await dispatch(inputChange(event.target.value));
     if (searchValue.length > 2) {
-      console.log(dispatch(fetchSearchVariants(searchValue)));
+      dispatch(fetchSearchVariants(searchValue));
     }
   };
+  const clearSearch = () => {
+    dispatch(clearChange());
+  };
+  let autocompete = (<></>);
+  if (searchVariants.length !== 0) {
+    autocompete = (
+      <div className="position-absolute top-100 mt-2 bg-white border-1 border w-100 p-4">
+        <ul>
+          {searchVariants.map(el => {
+            return <li key={el.id} onClick={clearSearch}>
+              <NavLink to={`/shows/${el.id}`}>{el.name}
+              </NavLink>
+            </li>;
+          })}
+        </ul>
+      </div>
+    );
+  }
 
   return (
     <Form>
@@ -26,21 +44,13 @@ const SearchForm = () => {
           <Form.Label column="lg" md={4}>
             Search for TV Show:
           </Form.Label>
-          <Col className="position-relative">
+          <Col className="position-relative w-100">
             <Form.Control size="lg" type="text"
                           placeholder="Search"
                           value={searchValue}
                           onChange={onInputChange}/>
 
-            <div className="position-absolute top-100 bg-white border-1 border w-100 p-4">
-              <ul>
-                {searchVariants.map(el => {
-                  return <li key={el.id}><NavLink to={`/shows/${el.id}`} onClick={() => {
-                    dispatch(clearChange);
-                  }}>{el.name}</NavLink></li>;
-                })}
-              </ul>
-            </div>
+            {autocompete}
 
           </Col>
 

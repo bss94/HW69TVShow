@@ -21,8 +21,9 @@ export const searchSlice = createSlice({
     inputChange: (state: RootState, {payload: value}: PayloadAction<string>) => {
       state.searchValue = value;
     },
-    clearChange: (state: RootState) => {
+    clearChange: (state:Draft<SearchState>) => {
       state.searchValue = '';
+      state.searchVariants = [];
     }
   },
   extraReducers: (builder) => {
@@ -41,5 +42,4 @@ export const searchSlice = createSlice({
 export const searchReducer: Reducer<SearchState> = searchSlice.reducer;
 export const {inputChange, clearChange} = searchSlice.actions;
 export const selectSearch = (state: RootState) => state.search.searchValue;
-
 export const selectVariants = (state: RootState) => state.search.searchVariants;
