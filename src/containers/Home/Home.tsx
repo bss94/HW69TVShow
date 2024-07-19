@@ -1,18 +1,36 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {AppDispatch, RootState} from '../../app/store';
 import {useDispatch} from 'react-redux';
+
+import {useParams} from 'react-router-dom';
+import {fetchShow} from '../../store/showThunk';
 import {useAppSelector} from '../../app/hooks';
-import {selectVariants} from '../../store/searchSlice';
+import {selectShow} from '../../store/showSlice';
+import {Col, Row} from 'react-bootstrap';
 
 const Home = () => {
-  const dispatch:AppDispatch = useDispatch();
-  const searchVariants:RootState = useAppSelector(selectVariants);
+  const params = useParams();
+  const dispatch: AppDispatch = useDispatch();
+  const show: RootState = useAppSelector(selectShow);
+
+  useEffect(() => {
+    if (params.id) {
+      dispatch(fetchShow(params.id));
+    }
+  }, [params, dispatch]);
+
   return (
-    <div>
-      {searchVariants.map(el=> {
-       return <h1>{el.name}</h1>;
-      })}
-    </div>
+    <Row className="mt-5">
+      <Col md={3}>
+        <img src={show.image}/>
+      </Col>
+      <Col>
+        <h4>{show.name}</h4>
+        <div dangerouslySetInnerHTML={{__html: show.summary}}/>
+      </Col>
+
+
+    </Row>
   );
 };
 
